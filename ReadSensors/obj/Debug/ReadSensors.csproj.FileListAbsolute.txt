@@ -1,0 +1,9 @@
+c:\users\tyler\documents\visual studio 2013\Projects\ReadSensors\ReadSensors\bin\Debug\ReadSensors.exe.config
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\ReadSensors\ReadSensors\bin\Debug\ReadSensors.exe
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\ReadSensors\ReadSensors\bin\Debug\ReadSensors.pdb
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\ReadSensors\ReadSensors\obj\Debug\ReadSensors.csprojResolveAssemblyReference.cache
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\ReadSensors\ReadSensors\obj\Debug\ReadSensors.ReadSensor.resources
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\ReadSensors\ReadSensors\obj\Debug\ReadSensors.Properties.Resources.resources
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\ReadSensors\ReadSensors\obj\Debug\ReadSensors.csproj.GenerateResource.Cache
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\ReadSensors\ReadSensors\obj\Debug\ReadSensors.exe
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\ReadSensors\ReadSensors\obj\Debug\ReadSensors.pdb
