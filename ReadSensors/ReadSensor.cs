@@ -16,6 +16,12 @@ namespace ReadSensors
     public partial class ReadSensor : Form
     {
 
+        // Calibration factors for the sensors
+        double dbl_Biceps_Load_Cal_Factor = 0.0213; // Converts raw output to newtons
+        double dbl_Forearm_Load_Cal_Factor = 0.0223; // Converts raw output to newtons
+        double dbl_Forearm_Torque_Cal_Factor = 0.2727; // Converts raw output to newton-mm
+        double dbl_Rotation_Cal_Factor = -1;
+
         // DataSet is handle stored data from sensors
         DataSet _ds = new DataSet();
 
@@ -51,6 +57,7 @@ namespace ReadSensors
         string str_COMData_Sensor1 = "";
         string str_COMData_Sensor2 = "";
         string str_Load_Sensor1 = "";
+        string str_Load_Sensor2 = "";
 
         // Testing configurations
         int int_Specimen_Number = 0;
@@ -137,6 +144,7 @@ namespace ReadSensors
 
                 dd_Test_Type.Items.Add("Torsion Test");
                 dd_Test_Type.Items.Add("Flexion Test");
+                dd_Test_Type.Items.Add("Area Test");
 
                 // Trial Number Items
                 dd_Trial_Number.DataSource = null;
@@ -413,7 +421,7 @@ namespace ReadSensors
                 if (Int32.TryParse(str_Temp_COMData_Sensor1, out int_COMData_Sensor1))
                 {
                     // Multiply by calibration factor to get units in Newtons
-                    double dbl_Load_Value = 0.0213 * (double)int_COMData_Sensor1;
+                    double dbl_Load_Value = dbl_Biceps_Load_Cal_Factor * (double)int_COMData_Sensor1;
                     str_Load_Sensor1 = dbl_Load_Value.ToString();
                 }
                 
@@ -461,6 +469,39 @@ namespace ReadSensors
                 // Trim lead line returns
                 str_COMData_Sensor2 = Regex.Replace(str_COMData_Sensor2, @"[\u001D]", "");
                 str_COMData_Sensor2 = Regex.Replace(str_COMData_Sensor2, @"[^\w\].\\/:-]", "");
+
+                // Trim leading zeros and trailing decimal point
+                string str_Temp_COMData_Sensor2 = str_COMData_Sensor2.TrimEnd(new Char[] { '.' });
+
+                // Set default sensor2 data integer and string
+                int int_COMData_Sensor2 = 0;
+                str_Load_Sensor2 = "0";
+
+                // Try to parse the string into an integer
+                if (Int32.TryParse(str_Temp_COMData_Sensor2, out int_COMData_Sensor2))
+                {
+                    double dbl_Load_Value = 0;
+
+                    if (str_Test_Type == "Torsion")
+                    {
+                        // Multiply by calibration factor to get torque in Newtons-mm
+                        dbl_Load_Value = dbl_Forearm_Torque_Cal_Factor * (double)int_COMData_Sensor2;
+                    } 
+                    else if (str_Test_Type == "Flexion")
+                    {
+                        // Multiply by calibration factor to get load in Newtons
+                        dbl_Load_Value = dbl_Forearm_Load_Cal_Factor * (double)int_COMData_Sensor2;
+                    }
+                    else if (str_Test_Type == "Area")
+                    {
+                        // Multiply by calibration factor to get rotation in 
+                        dbl_Load_Value = dbl_Rotation_Cal_Factor * (double)int_COMData_Sensor2;
+                    }
+
+                    // Multiply by calibration factor to get units in Newtons
+                    str_Load_Sensor2 = dbl_Load_Value.ToString();
+                }
+
 
                 if (bool_COMData_Received)
                 {
@@ -577,6 +618,9 @@ namespace ReadSensors
                 case 1:
                     str_Test_Type = "Flexion";
                     break;
+                case 2:
+                    str_Test_Type = "Area";
+                    break;
             }
         }
 
@@ -627,6 +671,10 @@ namespace ReadSensors
                     else if (str_Test_Type.Equals("Flexion"))
                     {
                         variablelist = "Biceps Load \t Forearm Load";
+                    }
+                    else if (str_Test_Type.Equals("Area"))
+                    {
+                        variablelist = "Biceps Load \t Rotation";
                     }
                     else
                     {
