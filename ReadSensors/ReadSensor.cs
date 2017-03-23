@@ -53,7 +53,7 @@ namespace ReadSensors
         string str_Sensor2_FlowControl = "";
         int int_Sensor2_ReadTimeout = 0;
 
-        // For reading serial data from scanner and photoeye
+        // For reading serial data from sensors
         string str_COMData_Sensor1 = "";
         string str_COMData_Sensor2 = "";
         string str_Load_Sensor1 = "";
@@ -208,10 +208,10 @@ namespace ReadSensors
                 dd_Sensor2_COMPort.ValueMember = "";
                 dd_Sensor2_COMPort.Items.Clear();
 
-                // Populate photoeye COM Port drop down with available serial ports
+                // Populate Sensor 2 COM Port drop down with available serial ports
                 foreach (string s in SerialPort.GetPortNames())
                 {
-                    if (!(dd_Sensor1_COMPort.SelectedItem.ToString() == s)) // remove port selected for scanner
+                    if (!(dd_Sensor1_COMPort.SelectedItem.ToString() == s)) // remove port selected for Sensor 1
                         dd_Sensor2_COMPort.Items.Add(s);
                 }
             }
@@ -231,16 +231,16 @@ namespace ReadSensors
             // If Sensor 1 drop down is not selected
             if (dd_Sensor1_COMPort.SelectedIndex < 0)
             {
-                // Clear values in Sensor 2 COM Port drop down
+                // Clear values in Sensor 1 COM Port drop down
                 dd_Sensor1_COMPort.DataSource = null;
                 dd_Sensor1_COMPort.DisplayMember = "";
                 dd_Sensor1_COMPort.ValueMember = "";
                 dd_Sensor1_COMPort.Items.Clear();
 
-                // Populate photoeye COM Port drop down with available serial ports
+                // Populate Sensor 1 COM Port drop down with available serial ports
                 foreach (string s in SerialPort.GetPortNames())
                 {
-                    if (!(dd_Sensor2_COMPort.SelectedItem.ToString() == s)) // remove port selected for scanner
+                    if (!(dd_Sensor2_COMPort.SelectedItem.ToString() == s)) // remove port selected for Sensor 1
                         dd_Sensor1_COMPort.Items.Add(s);
                 }
             }
@@ -266,7 +266,7 @@ namespace ReadSensors
                 return;
             }
 
-            // Remove any previous data inside of DataSet pertaining to Scanner List
+            // Remove any previous data inside of DataSet pertaining to Sensor List
             if (_ds.Tables.Contains("Sensor_Data"))
             {
                 _ds.Tables.Remove("Sensor_Data");
@@ -424,7 +424,7 @@ namespace ReadSensors
                     double dbl_Load_Value = dbl_Biceps_Load_Cal_Factor * (double)int_COMData_Sensor1;
                     str_Load_Sensor1 = dbl_Load_Value.ToString();
                 }
-                
+
 
                 if (bool_COMData_Received)
                 {
@@ -435,7 +435,7 @@ namespace ReadSensors
                     // Change the COMData received flag to true
                     bool_COMData_Received = false;
 
-                    // Update GUI display of trigger count and datagridview 
+                    // Update GUI display of trigger count and datagridview
                     this.BeginInvoke(new deleg_DGV_Update(gui_Update_DataGridView), new object[] { str_Load_Sensor1, str_COMData_Sensor2 });
                 }
                 else
@@ -452,13 +452,13 @@ namespace ReadSensors
             {
                 MessageBox.Show(ex.ToString());
             }
-            
+
         }
 
         // Data received by the Sensor 2 COMPort
         void serial_DataReceived_Sensor2(object sender, SerialDataReceivedEventArgs e)
         {
-            try               
+            try
             {
                 // Sleep for a few milliseconds to make sure all data is received
                 Thread.Sleep(int_ThreadSleep_Sensor);
@@ -486,7 +486,7 @@ namespace ReadSensors
                     {
                         // Multiply by calibration factor to get torque in Newtons-mm
                         dbl_Load_Value = dbl_Forearm_Torque_Cal_Factor * (double)int_COMData_Sensor2;
-                    } 
+                    }
                     else if (str_Test_Type == "Flexion")
                     {
                         // Multiply by calibration factor to get load in Newtons
@@ -494,7 +494,7 @@ namespace ReadSensors
                     }
                     else if (str_Test_Type == "Area")
                     {
-                        // Multiply by calibration factor to get rotation in 
+                        // Multiply by calibration factor to get rotation in
                         dbl_Load_Value = dbl_Rotation_Cal_Factor * (double)int_COMData_Sensor2;
                     }
 
@@ -512,7 +512,7 @@ namespace ReadSensors
                     // Change the COMData received flag to true
                     bool_COMData_Received = false;
 
-                    // Update GUI display of trigger count and datagridview 
+                    // Update GUI display of trigger count and datagridview
                     this.BeginInvoke(new deleg_DGV_Update(gui_Update_DataGridView), new object[] { str_Load_Sensor1, str_COMData_Sensor2 });
                 }
                 else
@@ -535,7 +535,7 @@ namespace ReadSensors
 
         #region Helper Functions
 
-        // Functions to get COM settings for scanner
+        // Functions to get COM settings for sensor
         private Parity getParity(string s)
         {
             Parity p = Parity.None;
@@ -653,7 +653,7 @@ namespace ReadSensors
             }
 
             string filename = getFileName();
-               
+
             try
             {
                 // Confirmation message
@@ -719,7 +719,7 @@ namespace ReadSensors
                 {
                     numRows = _dt1.Rows.Count;
                 }
-                    
+
                 using (StreamWriter sw = new StreamWriter(_fileName, false))
                 {
                     sw.Write(_variableName);
@@ -727,7 +727,7 @@ namespace ReadSensors
 
                     for (int rowCount = 0; rowCount < numRows; rowCount++)
                     {
-                        //for (int colCount ) // 
+                        //for (int colCount ) //
 
                         if (_dt1.Rows[rowCount].IsNull("Data"))
                         {
